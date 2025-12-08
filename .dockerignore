@@ -1,0 +1,8 @@
+# Exclude the local node_modules folder from the Docker build context
+node_modules
+# other common ignores:
+.dockerignore
+Dockerfile
+.git
+.gitignore
+npm-debug.log*
