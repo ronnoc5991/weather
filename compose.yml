@@ -3,3 +3,9 @@ services:
     build: .
     ports:
       - 3000:3000
+    volumes:
+      # ensure local changes are visible in container
+      - .:/app
+      # ensure image's node_modules are used
+      - /app/node_modules
+    command: npm run dev
