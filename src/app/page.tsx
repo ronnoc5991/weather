@@ -8,6 +8,8 @@ export default async function Home() {
       <main>
         <h1>Hello World</h1>
         <p>{currentWeather.location.name}</p>
+        <p>{currentWeather.current.condition.text}</p>
+        <p>{currentWeather.current.temp_f}</p>
       </main>
     </div>
   );
