@@ -4,9 +4,11 @@ EXPOSE 3000
 
 WORKDIR /app
 
-COPY . .
+COPY package.json package-lock.json ./
 
 RUN npm ci
+
+COPY . .
 
 RUN npm run build
 
