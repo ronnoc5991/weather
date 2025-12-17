@@ -1,5 +1,8 @@
 import { fetchForecast } from "@/api/weather/fetchForecast";
+import ForecastWidget from "@/components/ForecastWidget";
 import SearchBar from "@/components/SearchBar";
+import TemperatureDisplay from "@/components/TemperatureDisplay";
+import UnitToggle from "@/components/UnitToggle";
 
 const randomCities = [
   "Paris",
@@ -14,7 +17,7 @@ const randomCities = [
 ] as const;
 
 function getRandomCity() {
-  return randomCities[Math.floor(Math.random() * (randomCities.length + 1))];
+  return randomCities[Math.floor(Math.random() * randomCities.length)];
 }
 
 export default async function Home({
@@ -29,25 +32,17 @@ export default async function Home({
   return (
     <div>
       <main>
-        <h1>My Location</h1>
         <SearchBar initialValue={query}></SearchBar>
         <p>{forecast.location.name}</p>
-        <p>
-          {forecast.current.temp_f}/{forecast.current.temp_c}
-        </p>
+        <TemperatureDisplay
+          temp={{
+            imperial: forecast.current.temp_f,
+            metric: forecast.current.temp_c,
+          }}
+        />
         <p>{forecast.current.condition.text}</p>
-        {forecast.forecast.forecastday.map((day) => (
-          <>
-            <p>{day.date}</p>
-            <p>
-              {day.day.mintemp_f}/{day.day.maxtemp_f}
-            </p>
-            <p>
-              {day.astro.sunrise} - {day.astro.sunset}
-            </p>
-            <br />
-          </>
-        ))}
+        <UnitToggle></UnitToggle>
+        <ForecastWidget forecastDays={forecast.forecast.forecastday} />
       </main>
     </div>
   );
