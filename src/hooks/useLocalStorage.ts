@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
+// NOTE: must check for existence of window to avoid errors thrown on server
 export const useLocalStorage = <T extends string>({
   key,
   isValid,
@@ -9,23 +10,20 @@ export const useLocalStorage = <T extends string>({
   fallback: T;
   isValid: (v: string | null) => v is T;
 }): [T, Dispatch<SetStateAction<T>>] => {
-  const valueFromLocalStorage = localStorage.getItem(key);
-  const initialValue = isValid(valueFromLocalStorage)
-    ? valueFromLocalStorage
-    : fallback;
-
-  const [value, setValue] = useState<T>(initialValue);
-
-  const updateValue = (v: T | ((prev: T) => T)) => {
-    const nextValue = typeof v === "function" ? v(value) : v;
-    localStorage.setItem(key, nextValue);
-    setValue(nextValue);
-  };
+  const [value, setValue] = useState<T>(() => {
+    const valueFromLocalStorage =
+      typeof window !== "undefined" ? localStorage.getItem(key) : null;
+    const initialValue = isValid(valueFromLocalStorage)
+      ? valueFromLocalStorage
+      : fallback;
+    return initialValue;
+  });
 
   useEffect(() => {
-    // ensure value is set initially
-    localStorage.setItem(key, value);
-  }, []);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(key, value);
+    }
+  }, [value]);
 
-  return [value, updateValue] as const;
+  return [value, setValue] as const;
 };
