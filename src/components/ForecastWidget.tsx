@@ -1,5 +1,7 @@
+import React from "react";
 import { Forecast } from "@/api/weather/types/Forecast";
 import TemperatureDisplay from "./TemperatureDisplay";
+import Widget from "./Widget";
 
 type ForecastWidgetProps = {
   forecastDays: Forecast["forecastday"];
@@ -9,8 +11,7 @@ export default function ForecastWidget({ forecastDays }: ForecastWidgetProps) {
   const today = new Date();
 
   return (
-    <div>
-      <h1>Forecast</h1>
+    <Widget title="Forecast">
       <ul>
         {forecastDays.map((forecastDay) => {
           const date = new Date(forecastDay.date);
@@ -23,25 +24,28 @@ export default function ForecastWidget({ forecastDays }: ForecastWidgetProps) {
               });
 
           return (
-            <li key={forecastDay.date}>
-              {dayName} - {forecastDay.day.condition.text} -{" "}
-              <TemperatureDisplay
-                temp={{
-                  imperial: forecastDay.day.mintemp_f,
-                  metric: forecastDay.day.mintemp_c,
-                }}
-              />
-              &nbsp;-&nbsp;
-              <TemperatureDisplay
-                temp={{
-                  imperial: forecastDay.day.maxtemp_f,
-                  metric: forecastDay.day.maxtemp_c,
-                }}
-              />
-            </li>
+            <React.Fragment key={forecastDay.date}>
+              <hr />
+              <li>
+                {dayName} - {forecastDay.day.condition.text} -{" "}
+                <TemperatureDisplay
+                  temp={{
+                    imperial: forecastDay.day.mintemp_f,
+                    metric: forecastDay.day.mintemp_c,
+                  }}
+                />
+                &nbsp;-&nbsp;
+                <TemperatureDisplay
+                  temp={{
+                    imperial: forecastDay.day.maxtemp_f,
+                    metric: forecastDay.day.maxtemp_c,
+                  }}
+                />
+              </li>
+            </React.Fragment>
           );
         })}
       </ul>
-    </div>
+    </Widget>
   );
 }
